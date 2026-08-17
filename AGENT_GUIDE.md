@@ -11,8 +11,9 @@ Build custom frontend UI/UX while preserving the runtime and tenant-scoped wirin
 1. Keep contact form browser submits same-origin (`/api/contact`).
 2. Keep server-side proxy forwarding to `XT_BACKEND_CONTACT_ENDPOINT`.
 3. Keep tenant scoping header on proxy requests (`x-xt-tenant-slug`).
-4. Keep runtime adapter endpoint shape in `lib/runtime-api.ts`.
-5. Keep env variable names unchanged unless you migrate all docs and deployment configs.
+4. Keep click-identifier cookies (`xt_gclid` / `xt_gbraid` / `xt_wbraid`) set by `middleware.ts` and injected by the contact proxy. Do not map `gbraid` or `wbraid` into `gclid`.
+5. Keep runtime adapter endpoint shape in `lib/runtime-api.ts`.
+6. Keep env variable names unchanged unless you migrate all docs and deployment configs.
 
 ## Allowed Customization
 
@@ -26,6 +27,7 @@ Build custom frontend UI/UX while preserving the runtime and tenant-scoped wirin
 - Hardcoding workspace secrets in source
 - Removing tenant slug wiring from contact/runtime requests
 - Converting proxy contact submits to direct browser cross-origin calls
+- Stripping click-identifier middleware or proxy injection, or writing `gbraid`/`wbraid` into the `gclid` field
 
 ## New Client Bootstrap
 

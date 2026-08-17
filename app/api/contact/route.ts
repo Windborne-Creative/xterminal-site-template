@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { CLICK_ID_KEYS, clickIdCookieName, nonEmptyText } from '@/lib/click-ids'
 
 const BACKEND_CONTACT_ENDPOINT =
   process.env.XT_BACKEND_CONTACT_ENDPOINT ||
@@ -10,9 +11,26 @@ const TENANT_SLUG =
   process.env.NEXT_PUBLIC_XT_TENANT_SLUG ||
   'default'
 
-export async function POST(request: Request) {
+function withClickIds(
+  payload: Record<string, unknown>,
+  request: NextRequest
+): Record<string, unknown> {
+  const next = { ...payload }
+  for (const key of CLICK_ID_KEYS) {
+    if (nonEmptyText(next[key])) continue
+    const fromCookie = nonEmptyText(request.cookies.get(clickIdCookieName(key))?.value)
+    if (fromCookie) next[key] = fromCookie
+  }
+  return next
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const payload = await request.json()
+    const raw = await request.json().catch(() => ({}))
+    const payload =
+      raw && typeof raw === 'object' && !Array.isArray(raw)
+        ? withClickIds(raw as Record<string, unknown>, request)
+        : raw
 
     const upstream = await fetch(BACKEND_CONTACT_ENDPOINT, {
       method: 'POST',
