@@ -1,5 +1,5 @@
 export const APP_BASE_URL =
-  process.env.NEXT_PUBLIC_APP_BASE_URL?.replace(/\/$/, '') || 'https://app.example-platform.com'
+  process.env.NEXT_PUBLIC_APP_BASE_URL?.replace(/\/$/, '') || 'https://app.xterminal.dev'
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://example-client-site.com'
