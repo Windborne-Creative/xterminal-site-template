@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/contact',
   '/team',
   '/menu',
+  '/projects',
 ] as const
 
 export default function sitemap(): MetadataRoute.Sitemap {

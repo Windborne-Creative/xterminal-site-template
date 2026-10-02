@@ -31,6 +31,7 @@ Preserve these contracts:
 7. Keep runtime adapter endpoint shape in `lib/runtime-api.ts`.
 8. Keep env variable names unchanged unless you migrate all docs and deployment configs.
 9. `/go` is a noindex campaign landing stub and must stay out of `app/sitemap.ts`.
+10. Keep `app/projects/page.tsx` on the sitemap. Team profile links go through `safeHref` in `lib/safe-href.ts` before they render.
 
 ## Contact QA (verify by row)
 

@@ -1,5 +1,6 @@
 import { getEntities } from '@/lib/runtime-api'
 import type { EntityItem } from '@/lib/runtime-api'
+import { safeHref } from '@/lib/safe-href'
 import { Mail, Linkedin, Phone } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -19,6 +20,7 @@ interface TeamMemberData {
 
 function TeamCard({ member }: { member: EntityItem }) {
   const d = member.data as TeamMemberData
+  const linkedinHref = safeHref(d.linkedin_url)
   return (
     <div className="border border-stone-800 bg-stone-950/80 p-6 flex flex-col gap-4">
       {d.photo_url ? (
@@ -66,9 +68,9 @@ function TeamCard({ member }: { member: EntityItem }) {
             <Phone size={16} />
           </a>
         )}
-        {d.show_linkedin && d.linkedin_url && (
+        {d.show_linkedin && linkedinHref && (
           <a
-            href={d.linkedin_url}
+            href={linkedinHref}
             target="_blank"
             rel="noopener noreferrer"
             className="text-stone-500 hover:text-white transition-colors"

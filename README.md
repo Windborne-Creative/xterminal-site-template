@@ -49,6 +49,7 @@ Do not treat HTTP 200 as proof the lead landed. Confirm the `contact_submissions
 - `/go` noindex campaign landing stub (omitted from the sitemap)
 - `app/sitemap.ts` and `app/robots.ts`
 - Neutral env contract for tenant-scoped runtime wiring
+- Project case studies (`app/projects/page.tsx`) and safe profile links (`lib/safe-href.ts`)
 
 ## What This Template Does NOT Include
 
@@ -79,21 +80,19 @@ npm run dev
 
 ## Environment Variables
 
-Set these on the **client site** host (Vercel project for this repo), not on the xTerminal app.
+Set these on the **client site** host (Vercel project for this repo), not on the xTerminal app. Canonical API origin for these examples is `https://app.xterminal.dev`.
 
-| Variable | Example | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | `https://example-client-site.com` | Canonical origin for this frontend (sitemap, robots, metadata). |
-| `NEXT_PUBLIC_APP_BASE_URL` | `https://app.xterminal.dev` | xTerminal app origin for admin login and signup links. |
-| `XT_BACKEND_CONTACT_ENDPOINT` | `https://app.xterminal.dev/api/contact` | Server-only proxy target. Browsers never call this URL directly. |
-| `NEXT_PUBLIC_MARKETING_ASSET_BASE_URL` | `https://app.xterminal.dev` | Optional remote media origin. |
-| `NEXT_PUBLIC_XT_API_BASE_URL` | `https://app.xterminal.dev` | xTerminal public API origin for runtime reads. |
-| `NEXT_PUBLIC_XT_TENANT_SLUG` | `your-tenant-slug` | Workspace slug. Sent as `x-xt-tenant-slug` on contact POSTs. |
-| `NEXT_PUBLIC_XT_PUBLIC_API_KEY` | (empty until minted) | Optional tenant public runtime key for blog and entity reads. |
-
-`XT_TENANT_SLUG` is an optional server-only override for the contact proxy. The xTerminal developer wizard copies `NEXT_PUBLIC_XT_TENANT_SLUG`.
+- `NEXT_PUBLIC_SITE_URL` - canonical origin for this frontend (sitemap, robots, metadata)
+- `NEXT_PUBLIC_APP_BASE_URL` - xTerminal app origin for admin login and signup links (`https://app.xterminal.dev`)
+- `XT_BACKEND_CONTACT_ENDPOINT` - server-only proxy target (`https://app.xterminal.dev/api/contact`). Browsers never call this URL directly.
+- `NEXT_PUBLIC_MARKETING_ASSET_BASE_URL` - optional remote media origin (`https://app.xterminal.dev`)
+- `NEXT_PUBLIC_XT_API_BASE_URL` - xTerminal backend base URL for runtime reads
+- `NEXT_PUBLIC_XT_TENANT_SLUG` - tenant slug for workspace-scoped reads/writes
+- `NEXT_PUBLIC_XT_PUBLIC_API_KEY` - tenant public runtime key (if required)
 
 ## Standard Build Flow Per Client
+
+`XT_TENANT_SLUG` is an optional server-only override for the contact proxy. The xTerminal developer wizard copies `NEXT_PUBLIC_XT_TENANT_SLUG`.
 
 1. Duplicate the latest `main` of this project into a new repo.
 2. Apply the client extraction package. Match names, services, and IA. Do not reinterpret.
@@ -105,6 +104,7 @@ Set these on the **client site** host (Vercel project for this repo), not on the
    - runtime page reads
    - contact submission exists as a `contact_submissions` row in the correct workspace Inbox
    - `/go` stays noindex and absent from `/sitemap.xml`
+   - `/projects` stays on the sitemap
    - admin preview points to the custom domain
 
 ## Workspace Entities (Custom Content Types)
@@ -128,6 +128,7 @@ const members = await getEntities('team_member')
 | Team Members | `team_member` | name, title, bio, photo_url, email, phone, linkedin_url, show_email, show_phone, show_linkedin |
 | Menu Items | `menu_item` | category, name, description, gluten_free, vegetarian, vegan, spicy, on_lunch, on_dinner, market_price, price_lunch, price_dinner, options_lunch, options_dinner |
 | Menu Sections | `menu_section` | slug, label, note_lunch, note_dinner |
+| Projects | `project` | slug, title, location, body, copy_blocks, credits, hero_src, inset_src, gallery_blocks, process_slides, card_src, category, published, plus SEO/featured flags |
 
 > **Menu (restaurant) is an Advanced-tier feature.** `menu_item` and `menu_section`
 > are activated together via **+ Add content type → Menu Control** in the admin.
@@ -138,8 +139,9 @@ const members = await getEntities('team_member')
 
 ### Sample Pages
 
-- `/team`: team members page (see `app/team/page.tsx`)
+- `/team`: team members page (see `app/team/page.tsx`). Profile links use `safeHref`.
 - `/menu`: restaurant menu with Lunch/Dinner tabs (see `app/menu/page.tsx` + `components/site/MenuView.tsx`)
+- `/projects`: project case studies from `getEntities('project')` (see `app/projects/page.tsx`)
 - `/go`: noindex campaign landing stub (see `app/(campaigns)/go/page.tsx`)
 
 Entity data is sorted by `sort_order` and only active entities are returned by the public API. Toggle fields (e.g. `show_email`) control which contact details are exposed. Respect them in your templates.
@@ -152,4 +154,5 @@ Entity data is sorted by `sort_order` and only active entities are returned by t
 - Preserve tenant-scoped runtime headers and slug wiring.
 - Keep contact form browser requests same-origin and forward server-side.
 - Verify contact by reading the Inbox row, not by trusting HTTP 200.
+- Keep the projects page and `safeHref` on team links.
 - Treat this repo as baseline infrastructure. Client repos own branding and UX.
