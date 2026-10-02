@@ -89,6 +89,7 @@ Set these on the **client site** host (Vercel project for this repo), not on the
 - `NEXT_PUBLIC_XT_API_BASE_URL` - xTerminal backend base URL for runtime reads
 - `NEXT_PUBLIC_XT_TENANT_SLUG` - tenant slug for workspace-scoped reads/writes
 - `NEXT_PUBLIC_XT_PUBLIC_API_KEY` - tenant public runtime key (if required)
+- `NEXT_PUBLIC_SITEDIO_APP_ORIGIN` - optional pin picker origin for local dev (default `https://app.sitedio.ai`)
 
 ## Standard Build Flow Per Client
 

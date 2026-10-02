@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import { SITE_URL } from '@/lib/site'
+import SitedioPinLoader from '@/components/SitedioPinLoader'
 import SiteHeader from '@/components/site/SiteHeader'
 import SiteFooter from '@/components/site/SiteFooter'
 
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistMono.variable} ${inter.variable}`}>
       <body className="font-mono">
+        <SitedioPinLoader />
         <div className="site-shell-bg min-h-[100svh] overflow-x-clip text-stone-100 md:min-h-[100dvh]">
           <div className="mx-auto flex w-full max-w-6xl flex-col px-6 pb-20 pt-8">
             <SiteHeader />
