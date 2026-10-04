@@ -1,6 +1,6 @@
 # Client Site Template Foundation
 
-Brand-neutral starter frontend for client website projects that connect to an xTerminal workspace.
+Brand-neutral starter frontend for client website projects that connect to a Sitedio workspace.
 
 ## Purpose
 
@@ -9,18 +9,18 @@ Use the latest `main` of this repository as the scaffold for every new client si
 - Start from this clean, debranded structure
 - Apply the client extraction package on top (match the brief, do not reinterpret)
 - Keep runtime and lead-capture wiring consistent across projects
-- Connect to the xTerminal workspace backend when env is set
+- Connect to the Sitedio workspace backend when env is set
 
-Do not put product-agent or bot names in site copy or placeholders. Requests, Delivery, and worker UI stay in the xTerminal app, not in this template.
+Do not put product-agent or bot names in site copy or placeholders. Requests, Delivery, and worker UI stay in the Sitedio app, not in this template.
 
-## Site to xTerminal contract
+## Site to Sitedio contract
 
-Client sites talk to xTerminal through two paths:
+Client sites talk to Sitedio through two paths:
 
 1. **Contact (writes):** the browser POSTs same-origin to `/api/contact`. The server proxy forwards to `XT_BACKEND_CONTACT_ENDPOINT` (`https://app.xterminal.dev/api/contact`) with header `x-xt-tenant-slug`. The live handler is `Windborne-Creative/xterminal` `app/api/contact/route.ts`. It inserts `contact_submissions` via `parseContactLeadFields` in `lib/contact-attribution.ts`.
 2. **Runtime (reads):** `lib/runtime-api.ts` calls `NEXT_PUBLIC_XT_API_BASE_URL` `/api/public/v1/tenants/{slug}/...` with an optional public API key.
 
-Canonical API origin for env examples is `https://app.xterminal.dev` (see xTerminal `docs/CLIENT_SITE_SETUP.md` and `lib/client-env-copy-origin.ts`).
+Canonical API origin for env examples is `https://app.xterminal.dev` (see Sitedio `docs/CLIENT_SITE_SETUP.md` and `lib/client-env-copy-origin.ts`).
 
 ### Attribution
 
@@ -53,7 +53,7 @@ Do not treat HTTP 200 as proof the lead landed. Confirm the `contact_submissions
 
 ## What This Template Does NOT Include
 
-- xTerminal-specific branding, copy, domains, or assets
+- Sitedio-specific branding, copy, domains, or assets
 - Client-specific design system tokens
 - Backend secrets
 - Requests, Delivery, or worker admin UI
@@ -80,26 +80,26 @@ npm run dev
 
 ## Environment Variables
 
-Set these on the **client site** host (Vercel project for this repo), not on the xTerminal app. Canonical API origin for these examples is `https://app.xterminal.dev`.
+Set these on the **client site** host (Vercel project for this repo), not on the Sitedio app. Canonical API origin for these examples is `https://app.xterminal.dev`.
 
 - `NEXT_PUBLIC_SITE_URL` - canonical origin for this frontend (sitemap, robots, metadata)
-- `NEXT_PUBLIC_APP_BASE_URL` - xTerminal app origin for admin login and signup links (`https://app.xterminal.dev`)
+- `NEXT_PUBLIC_APP_BASE_URL` - Sitedio app origin for admin login and signup links (`https://app.xterminal.dev`)
 - `XT_BACKEND_CONTACT_ENDPOINT` - server-only proxy target (`https://app.xterminal.dev/api/contact`). Browsers never call this URL directly.
 - `NEXT_PUBLIC_MARKETING_ASSET_BASE_URL` - optional remote media origin (`https://app.xterminal.dev`)
-- `NEXT_PUBLIC_XT_API_BASE_URL` - xTerminal backend base URL for runtime reads
+- `NEXT_PUBLIC_XT_API_BASE_URL` - Sitedio backend base URL for runtime reads
 - `NEXT_PUBLIC_XT_TENANT_SLUG` - tenant slug for workspace-scoped reads/writes
 - `NEXT_PUBLIC_XT_PUBLIC_API_KEY` - tenant public runtime key (if required)
 - `NEXT_PUBLIC_SITEDIO_APP_ORIGIN` - optional pin picker origin for local dev (default `https://app.sitedio.ai`)
 
 ## Standard Build Flow Per Client
 
-`XT_TENANT_SLUG` is an optional server-only override for the contact proxy. The xTerminal developer wizard copies `NEXT_PUBLIC_XT_TENANT_SLUG`.
+`XT_TENANT_SLUG` is an optional server-only override for the contact proxy. The Sitedio developer wizard copies `NEXT_PUBLIC_XT_TENANT_SLUG`.
 
 1. Duplicate the latest `main` of this project into a new repo.
 2. Apply the client extraction package. Match names, services, and IA. Do not reinterpret.
 3. Replace site identity (name, logo, copy, color system, typography). Keep agent brand names out of copy.
 4. Build custom pages and components while preserving runtime adapter and contact contracts.
-5. Configure workspace domain, tenant slug, and public key in xTerminal.
+5. Configure workspace domain, tenant slug, and public key in Sitedio.
 6. Set project env vars and deploy.
 7. Run launch QA:
    - runtime page reads
@@ -110,7 +110,7 @@ Set these on the **client site** host (Vercel project for this repo), not on the
 
 ## Workspace Entities (Custom Content Types)
 
-The runtime API adapter includes `getEntities(type)` for fetching workspace entity data (team members, testimonials, services, etc.) managed through the xTerminal admin dashboard.
+The runtime API adapter includes `getEntities(type)` for fetching workspace entity data (team members, testimonials, services, etc.) managed through the Sitedio admin dashboard.
 
 ### Usage
 
@@ -134,7 +134,7 @@ const members = await getEntities('team_member')
 > **Menu (restaurant) is an Advanced-tier feature.** `menu_item` and `menu_section`
 > are activated together via **+ Add content type → Menu Control** in the admin.
 > The data contract, fixed section slugs, and rendering rules are defined in
-> `docs/MENU_ENTITY_CONTRACT.md` in the xTerminal platform repo. Match the field
+> `docs/MENU_ENTITY_CONTRACT.md` in the Sitedio platform repo. Match the field
 > keys and category/slug semantics exactly. Only presentation (fonts, colors,
 > spacing) should vary per restaurant.
 

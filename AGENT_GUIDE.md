@@ -4,17 +4,17 @@ This guide is for developers and coding agents who scaffold a new client website
 
 ## Core Objective
 
-Build custom frontend UI and UX while preserving the site to xTerminal runtime and lead-capture contract.
+Build custom frontend UI and UX while preserving the site to Sitedio runtime and lead-capture contract.
 
 ## Scaffold a new client site
 
 1. Start from the latest `main` of this repository (`Windborne-Creative/xterminal-site-template`). Do not scaffold from an older snapshot or a previous client repo.
 2. Apply the client extraction package on top (brand, IA, copy, imagery). Match the extraction. Do not reinterpret, invent, or "improve" positioning.
-3. Copy `.env.example` to `.env.local` and set the workspace slug plus the canonical xTerminal origin `https://app.xterminal.dev`.
+3. Copy `.env.example` to `.env.local` and set the workspace slug plus the canonical Sitedio origin `https://app.xterminal.dev`.
 4. Replace placeholder content and brand identity. Do not put product-agent or bot names in site copy, alt text, or form placeholders.
-5. Keep Requests, Delivery, and worker UI out of this site. Those live in the xTerminal app, not the marketing site.
+5. Keep Requests, Delivery, and worker UI out of this site. Those live in the Sitedio app, not the marketing site.
 
-## Site to xTerminal contract
+## Site to Sitedio contract
 
 Live backend handler: `Windborne-Creative/xterminal` `app/api/contact/route.ts`.
 Lead fields: `parseContactLeadFields` in `lib/contact-attribution.ts`.
@@ -35,7 +35,7 @@ Preserve these contracts:
 
 ## Contact QA (verify by row)
 
-An HTTP 200 from `/api/contact` is not enough. Open the tenant Inbox in xTerminal, or read the `contact_submissions` row in Postgres, and confirm the lead exists for the correct tenant with the expected message and attribution fields.
+An HTTP 200 from `/api/contact` is not enough. Open the tenant Inbox in Sitedio, or read the `contact_submissions` row in Postgres, and confirm the lead exists for the correct tenant with the expected message and attribution fields.
 
 ## Allowed Customization
 
