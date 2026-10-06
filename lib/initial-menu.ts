@@ -6,12 +6,12 @@ import type { EntityItem } from '@/lib/runtime-api'
  * Fill INITIAL_MENU_SECTIONS / INITIAL_MENU_ITEMS with this site's menu when you
  * build it. The same data serves two purposes:
  *   1. Pre-connection fallback — the /menu page renders these before the site is
- *      wired to xTerminal (or before the client has entered any items), so the
+ *      wired to Sitedio (or before the client has entered any items), so the
  *      design is testable immediately.
  *   2. Seed source — copy these into the platform seed migration
- *      (supabase/migrations/0XX_seed_<tenant>_menu.sql) to populate xTerminal.
+ *      (supabase/migrations/0XX_seed_<tenant>_menu.sql) to populate Sitedio.
  *
- * Once xTerminal returns menu records, live admin data takes over automatically
+ * Once Sitedio returns menu records, live admin data takes over automatically
  * (see app/menu/page.tsx). Keep the field keys + category slugs exactly as below —
  * they are the fixed menu data contract. Only presentation may vary per site.
  *

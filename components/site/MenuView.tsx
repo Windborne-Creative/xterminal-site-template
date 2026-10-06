@@ -5,7 +5,7 @@ import type { EntityItem } from '@/lib/runtime-api'
 
 /**
  * Restaurant menu renderer. Conforms to docs/MENU_ENTITY_CONTRACT.md in the
- * xTerminal platform repo: two feeds (`menu_section`, `menu_item`), Lunch/Dinner
+ * Sitedio platform repo (Windborne-Creative/xterminal): two feeds (`menu_section`, `menu_item`), Lunch/Dinner
  * service tabs, fixed structure, themeable presentation. Restyle freely via the
  * stone tokens below — do NOT change the field keys or category/slug semantics.
  */

@@ -12,9 +12,9 @@ export default async function MenuPage() {
     getEntities('menu_item'),
   ])
 
-  // Before the site is connected/populated in xTerminal, fall back to the
+  // Before the site is connected/populated in Sitedio, fall back to the
   // as-built menu in lib/initial-menu.ts so the page renders its real design.
-  // Live admin data takes over the moment xTerminal returns any records.
+  // Live admin data takes over the moment Sitedio returns any records.
   const finalSections = sections.length > 0 ? sections : getInitialMenuSections()
   const finalItems = items.length > 0 ? items : getInitialMenuItems()
 
