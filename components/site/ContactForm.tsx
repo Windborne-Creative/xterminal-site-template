@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CONTACT_ENDPOINT } from '@/lib/site'
 
 type RequestType = 'general' | 'implementation' | 'demo'
@@ -14,6 +14,13 @@ export default function ContactForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  // When the form appeared. The contact endpoint quietly drops posts sent
+  // faster than a person could type them.
+  const shownAt = useRef(0)
+
+  useEffect(() => {
+    shownAt.current = performance.now()
+  }, [])
 
   const typeLabel: Record<RequestType, string> = {
     general: 'General',
@@ -58,6 +65,7 @@ export default function ContactForm() {
           email: email.trim(),
           message: composedMessage,
           company_website: companyWebsite,
+          form_elapsed_ms: shownAt.current ? Math.round(performance.now() - shownAt.current) : undefined,
         }),
       })
 
@@ -65,6 +73,7 @@ export default function ContactForm() {
       if (!res.ok) throw new Error(body.error || 'Failed to submit form')
 
       setSuccess(true)
+      shownAt.current = performance.now()
       setName('')
       setEmail('')
       setCompany('')

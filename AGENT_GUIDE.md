@@ -32,6 +32,7 @@ Preserve these contracts:
 8. Keep env variable names unchanged unless you migrate all docs and deployment configs.
 9. `/go` is a noindex campaign landing stub and must stay out of `app/sitemap.ts`.
 10. Keep `app/projects/page.tsx` on the sitemap. Team profile links go through `safeHref` in `lib/safe-href.ts` before they render.
+11. Spam guard. Every contact form keeps a hidden, empty `company_website` input (`display: none`, `tabIndex={-1}`, `autoComplete="off"`) and sends its value, plus `form_elapsed_ms`: whole milliseconds from when the form (for a multi-step or modal form, its first step) first appeared to the send press, measured with `performance.now()`, never `Date.now()`. Sitedio answers `{ ok: true }` but saves nothing and emails no one when `company_website` is filled or the post came faster than `XT_CONTACT_MIN_FILL_MS` (default 2000). A custom form or proxy that builds its own JSON must pass both fields through under these names; a proxy that drops them turns the guard off for that site. If you can't measure the time reliably, leave `form_elapsed_ms` out: posts without it are still accepted. Never give a real, visible input the names `website`, `honeypot`, `hp_field` or `company_website`; those are honeypots and filled values are dropped.
 
 ## Contact QA (verify by row)
 
