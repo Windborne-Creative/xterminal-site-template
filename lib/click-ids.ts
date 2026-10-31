@@ -54,7 +54,8 @@ export function readAttributionCookies(
 
 export function injectAttributionFields(
   payload: Record<string, unknown>,
-  cookies: AttributionCookieReader
+  cookies: AttributionCookieReader,
+  nowMs: number = Date.now(),
 ): Record<string, unknown> {
   const next = { ...payload }
   const stored = readAttributionCookies(cookies)
@@ -63,6 +64,7 @@ export function injectAttributionFields(
     const fromCookie = stored[key]
     if (fromCookie) next[key] = fromCookie
   }
+  applyMetaBrowserIds(next, cookies, nowMs)
   return next
 }
 
@@ -118,4 +120,64 @@ export function persistAttributionCookies(args: {
   if (sawTrackedParam) {
     write.set(clickIdCookieName('last_touch_at'), now)
   }
+}
+
+/**
+ * Meta _fbp / _fbc shape: fb.<subdomain index>.<unix milliseconds>.<id>
+ * Keep this pattern identical to the contact API parser.
+ * Junk is dropped. A bad cookie must not fail the contact submission.
+ */
+export const META_BROWSER_ID_MAX_LENGTH = 512
+
+const META_BROWSER_ID_RE = /^fb\.\d{1,4}\.\d{10,16}\.[A-Za-z0-9_-]+$/
+
+export function parseMetaBrowserId(value: unknown): string | null {
+  if (typeof value !== 'string') return null
+  if (value.length === 0 || value.length > META_BROWSER_ID_MAX_LENGTH) return null
+  if (!META_BROWSER_ID_RE.test(value)) return null
+  return value
+}
+
+/**
+ * Meta's server-side fbc when the pixel did not set _fbc:
+ * fb.1.<unix ms>.<fbclid>. Index 1 is the value they tell you to send
+ * when you build it yourself. Returns null when fbclid cannot sit in that shape.
+ */
+export function deriveFbcFromFbclid(fbclid: string, observedAtMs: number): string | null {
+  if (!Number.isFinite(observedAtMs) || observedAtMs <= 0) return null
+  const ms = Math.trunc(observedAtMs)
+  if (ms <= 0) return null
+  return parseMetaBrowserId(`fb.1.${ms}.${fbclid}`)
+}
+
+function touchObservedAtMs(payload: Record<string, unknown>, fallbackMs: number): number {
+  for (const key of ['last_touch_at', 'first_touch_at'] as const) {
+    const value = payload[key]
+    if (typeof value !== 'string' || value.length === 0) continue
+    const ms = Date.parse(value)
+    if (Number.isFinite(ms) && ms > 0) return Math.trunc(ms)
+  }
+  return fallbackMs
+}
+
+function applyMetaBrowserIds(
+  next: Record<string, unknown>,
+  cookies: AttributionCookieReader,
+  nowMs: number,
+): void {
+  const fbp = parseMetaBrowserId(next.fbp) ?? parseMetaBrowserId(cookies.get('_fbp')?.value)
+  if (fbp) next.fbp = fbp
+  else delete next.fbp
+
+  const fbc = parseMetaBrowserId(next.fbc) ?? parseMetaBrowserId(cookies.get('_fbc')?.value)
+  if (fbc) {
+    next.fbc = fbc
+    return
+  }
+
+  delete next.fbc
+  const fbclid = nonEmptyText(next.fbclid)
+  if (!fbclid) return
+  const derived = deriveFbcFromFbclid(fbclid, touchObservedAtMs(next, nowMs))
+  if (derived) next.fbc = derived
 }
